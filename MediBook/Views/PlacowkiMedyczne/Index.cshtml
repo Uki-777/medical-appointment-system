@@ -1,0 +1,47 @@
+@model IEnumerable<MediBook.Models.PlacowkaMedyczna>
+
+@{
+    ViewData["Title"] = "Placówki medyczne";
+}
+
+<h1>Placówki medyczne</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Dodaj placówkę</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Miasto</th>
+            <th>Adres</th>
+            <th>Telefon</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nazwa</td>
+                <td>@item.Miasto</td>
+                <td>@item.Adres</td>
+                <td>@item.NumerTelefonu</td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Edytuj
+                    </a>
+
+                    <a asp-action="Delete" asp-route-id="@item.Id"
+                       class="btn btn-danger btn-sm">
+                        Usuń
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

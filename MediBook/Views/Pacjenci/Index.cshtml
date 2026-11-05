@@ -1,0 +1,62 @@
+@model IEnumerable<MediBook.Models.Pacjent>
+
+<h1>Pacjenci</h1>
+
+<a asp-action="Create"
+   class="btn btn-primary mb-3">
+    Dodaj pacjenta
+</a>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Data urodzenia</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Imie</td>
+
+                <td>@item.Nazwisko</td>
+
+                <td>@item.Email</td>
+
+                <td>@item.NumerTelefonu</td>
+
+                <td>
+                    @item.DataUrodzenia?.ToString("dd.MM.yyyy")
+                </td>
+
+                <td>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Edytuj
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.Id"
+                       class="btn btn-danger btn-sm">
+                        Usuń
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

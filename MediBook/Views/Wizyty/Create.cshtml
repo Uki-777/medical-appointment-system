@@ -1,0 +1,73 @@
+@model MediBook.Models.Wizyta
+
+<h1>Umów wizytę</h1>
+
+<form asp-action="Create">
+
+    <div asp-validation-summary="All"
+         class="text-danger">
+    </div>
+
+    <div class="mb-3">
+
+        <label>Pacjent</label>
+
+        <select asp-for="PacjentId"
+                asp-items="ViewBag.Pacjenci"
+                class="form-select">
+
+            <option value="">
+                Wybierz pacjenta
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Lekarz</label>
+
+        <select asp-for="LekarzId"
+                asp-items="ViewBag.Lekarze"
+                class="form-select">
+
+            <option value="">
+                Wybierz lekarza
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Termin wizyty</label>
+
+        <input asp-for="DataWizyty"
+               type="datetime-local"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="Uwagi"></label>
+
+        <textarea asp-for="Uwagi"
+                  class="form-control"
+                  rows="3">
+        </textarea>
+
+    </div>
+
+    <button class="btn btn-primary">
+        Umów wizytę
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Wróć
+    </a>
+
+</form>

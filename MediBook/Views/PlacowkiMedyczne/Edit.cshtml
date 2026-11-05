@@ -1,0 +1,39 @@
+@model MediBook.Models.PlacowkaMedyczna
+
+@{
+    ViewData["Title"] = "Edytuj placówkę";
+}
+
+<h1>Edytuj placówkę</h1>
+
+<form asp-action="Edit">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Nazwa" class="form-label"></label>
+        <input asp-for="Nazwa" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Miasto" class="form-label"></label>
+        <input asp-for="Miasto" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Adres" class="form-label"></label>
+        <input asp-for="Adres" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NumerTelefonu" class="form-label"></label>
+        <input asp-for="NumerTelefonu" class="form-control" />
+    </div>
+
+    <button class="btn btn-primary">Zapisz</button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Wróć
+    </a>
+
+</form>

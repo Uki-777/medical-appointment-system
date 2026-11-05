@@ -1,0 +1,45 @@
+@model MediBook.Models.Pacjent
+
+<h1>Dodaj pacjenta</h1>
+
+<form asp-action="Create">
+
+    <div class="mb-3">
+        <label asp-for="Imie"></label>
+        <input asp-for="Imie" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Nazwisko"></label>
+        <input asp-for="Nazwisko" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NumerTelefonu"></label>
+        <input asp-for="NumerTelefonu" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DataUrodzenia"></label>
+
+        <input asp-for="DataUrodzenia"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+    <button class="btn btn-primary">
+        Zapisz
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Wróć
+    </a>
+
+</form>

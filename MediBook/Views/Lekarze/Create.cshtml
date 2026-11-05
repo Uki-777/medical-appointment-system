@@ -1,0 +1,66 @@
+@model MediBook.Models.Lekarz
+
+<h1>Dodaj lekarza</h1>
+
+<form asp-action="Create">
+
+    <div class="mb-3">
+
+        <label asp-for="Imie"></label>
+
+        <input asp-for="Imie"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="Nazwisko"></label>
+
+        <input asp-for="Nazwisko"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Specjalizacja</label>
+
+        <select asp-for="SpecjalizacjaId"
+                asp-items="ViewBag.Specjalizacje"
+                class="form-select">
+
+            <option value="">
+                Wybierz specjalizację
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Placówka</label>
+
+        <select asp-for="PlacowkaMedycznaId"
+                asp-items="ViewBag.Placowki"
+                class="form-select">
+
+            <option value="">
+                Wybierz placówkę
+            </option>
+
+        </select>
+
+    </div>
+
+    <button class="btn btn-primary">
+        Zapisz
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Wróć
+    </a>
+
+</form>

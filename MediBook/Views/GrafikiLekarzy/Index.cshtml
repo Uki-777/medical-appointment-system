@@ -1,0 +1,72 @@
+@model IEnumerable<MediBook.Models.GrafikLekarza>
+
+<h1>Grafik lekarzy</h1>
+
+<a asp-action="Create"
+   class="btn btn-primary mb-3">
+    Dodaj grafik
+</a>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Lekarz</th>
+            <th>Data</th>
+            <th>Od</th>
+            <th>Do</th>
+            <th>Dostępny</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @item.Lekarz?.Imie
+                    @item.Lekarz?.Nazwisko
+                </td>
+
+                <td>
+                    @item.Data.ToString("dd.MM.yyyy")
+                </td>
+
+                <td>
+                    @item.GodzinaOd.ToString(@"hh\:mm")
+                </td>
+
+                <td>
+                    @item.GodzinaDo.ToString(@"hh\:mm")
+                </td>
+
+                <td>
+                    @(item.CzyDostepny ? "Tak" : "Nie")
+                </td>
+
+                <td>
+
+                    <form asp-action="Delete"
+                          method="post">
+
+                        <input type="hidden"
+                               name="id"
+                               value="@item.Id" />
+
+                        <button class="btn btn-danger btn-sm">
+                            Usuń
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

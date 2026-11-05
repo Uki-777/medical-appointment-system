@@ -1,0 +1,96 @@
+@model IEnumerable<MediBook.Models.Wizyta>
+
+<h1>Wizyty</h1>
+
+<a asp-action="Create"
+   class="btn btn-primary mb-3">
+    Umów wizytę
+</a>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Pacjent</th>
+            <th>Lekarz</th>
+            <th>Specjalizacja</th>
+            <th>Placówka</th>
+            <th>Termin</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @item.Pacjent?.Imie
+                    @item.Pacjent?.Nazwisko
+                </td>
+
+                <td>
+                    @item.Lekarz?.Imie
+                    @item.Lekarz?.Nazwisko
+                </td>
+
+                <td>
+                    @item.Lekarz?.Specjalizacja?.Nazwa
+                </td>
+
+                <td>
+                    @item.Lekarz?.PlacowkaMedyczna?.Nazwa
+                </td>
+
+                <td>
+                    @item.DataWizyty.ToString("dd.MM.yyyy HH:mm")
+                </td>
+
+                <td>
+                    @item.Status
+                </td>
+
+                <td>
+
+                    @if (item.Status == MediBook.Models.StatusWizyty.Zaplanowana)
+                    {
+                        <form asp-action="Anuluj"
+                              method="post"
+                              class="d-inline">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.Id" />
+
+                            <button class="btn btn-danger btn-sm">
+                                Anuluj
+                            </button>
+
+                        </form>
+
+                        <form asp-action="Zakoncz"
+                              method="post"
+                              class="d-inline">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.Id" />
+
+                            <button class="btn btn-success btn-sm">
+                                Zakończ
+                            </button>
+
+                        </form>
+                    }
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

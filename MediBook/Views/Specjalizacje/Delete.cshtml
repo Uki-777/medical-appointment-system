@@ -1,0 +1,21 @@
+@model MediBook.Models.Specjalizacja
+
+@{
+    ViewData["Title"] = "Usuń specjalizację";
+}
+
+<h1>Usuń specjalizację</h1>
+
+<h4>Czy na pewno chcesz usunąć tę specjalizację?</h4>
+
+<div class="mb-3">
+    <strong>Nazwa:</strong>
+    @Model.Nazwa
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Usuń</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>

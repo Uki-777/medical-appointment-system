@@ -1,0 +1,34 @@
+@model MediBook.Models.Lekarz
+
+<h1>Usuń lekarza</h1>
+
+<h4>
+    Czy na pewno chcesz usunąć lekarza?
+</h4>
+
+<p>
+    @Model.Imie @Model.Nazwisko
+</p>
+
+<p>
+    @Model.Specjalizacja?.Nazwa
+</p>
+
+<p>
+    @Model.PlacowkaMedyczna?.Nazwa
+</p>
+
+<form asp-action="Delete">
+
+    <input type="hidden" asp-for="Id" />
+
+    <button class="btn btn-danger">
+        Usuń
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Anuluj
+    </a>
+
+</form>

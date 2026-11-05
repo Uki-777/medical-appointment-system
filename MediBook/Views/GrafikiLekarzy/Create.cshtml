@@ -1,0 +1,78 @@
+@model MediBook.Models.GrafikLekarza
+
+<h1>Dodaj grafik lekarza</h1>
+
+<form asp-action="Create">
+
+    <div asp-validation-summary="All"
+         class="text-danger">
+    </div>
+
+    <div class="mb-3">
+
+        <label>Lekarz</label>
+
+        <select asp-for="LekarzId"
+                asp-items="ViewBag.Lekarze"
+                class="form-select">
+
+            <option value="">
+                Wybierz lekarza
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="Data"></label>
+
+        <input asp-for="Data"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="GodzinaOd"></label>
+
+        <input asp-for="GodzinaOd"
+               type="time"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="GodzinaDo"></label>
+
+        <input asp-for="GodzinaDo"
+               type="time"
+               class="form-control" />
+
+    </div>
+
+    <div class="form-check mb-3">
+
+        <input asp-for="CzyDostepny"
+               class="form-check-input" />
+
+        <label asp-for="CzyDostepny"
+               class="form-check-label">
+            Dostępny
+        </label>
+
+    </div>
+
+    <button class="btn btn-primary">
+        Zapisz
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Wróć
+    </a>
+
+</form>

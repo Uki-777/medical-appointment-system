@@ -1,0 +1,58 @@
+@model IEnumerable<MediBook.Models.Lekarz>
+
+<h1>Lekarze</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        Dodaj lekarza
+    </a>
+</p>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Specjalizacja</th>
+            <th>Placówka</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Imie</td>
+
+                <td>@item.Nazwisko</td>
+
+                <td>@item.Specjalizacja?.Nazwa</td>
+
+                <td>@item.PlacowkaMedyczna?.Nazwa</td>
+
+                <td>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@item.Id"
+                       class="btn btn-warning btn-sm">
+                        Edytuj
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.Id"
+                       class="btn btn-danger btn-sm">
+                        Usuń
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
