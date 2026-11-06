@@ -24,5 +24,9 @@ public class Pacjent
 
     public DateTime? DataUrodzenia { get; set; }
 
+    public string? UzytkownikId { get; set; }
+
+    public Uzytkownik? Uzytkownik { get; set; }
+
     public ICollection<Wizyta> Wizyty { get; set; } = new List<Wizyta>();
 }

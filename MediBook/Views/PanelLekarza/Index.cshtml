@@ -1,0 +1,97 @@
+@model IEnumerable<MediBook.Models.Wizyta>
+
+@{
+    ViewData["Title"] = "Moje wizyty";
+}
+
+<h1>Moje wizyty</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Nie masz żadnych zaplanowanych wizyt.
+    </div>
+}
+else
+{
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Pacjent</th>
+                <th>Termin</th>
+                <th>Status</th>
+                <th>Uwagi</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        @item.Pacjent?.Imie
+                        @item.Pacjent?.Nazwisko
+                    </td>
+
+                    <td>
+                        @item.DataWizyty.ToString(
+                            "dd.MM.yyyy HH:mm")
+                    </td>
+
+                    <td>
+                        @item.Status
+                    </td>
+
+                    <td>
+                        @item.Uwagi
+                    </td>
+
+                    <td>
+
+                        @if (item.Status ==
+                            MediBook.Models.StatusWizyty.Zaplanowana)
+                        {
+                            <form asp-action="Zakoncz"
+                                  method="post"
+                                  class="d-inline">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-success btn-sm">
+                                    Zakończ
+                                </button>
+
+                            </form>
+
+                            <form asp-action="Nieobecnosc"
+                                  method="post"
+                                  class="d-inline">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-warning btn-sm">
+                                    Nieobecność
+                                </button>
+
+                            </form>
+                        }
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}

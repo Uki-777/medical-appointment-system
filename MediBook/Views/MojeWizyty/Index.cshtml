@@ -1,0 +1,92 @@
+@model IEnumerable<MediBook.Models.Wizyta>
+
+@{
+    ViewData["Title"] = "Moje wizyty";
+}
+
+<h1>Moje wizyty</h1>
+
+<p>
+    <a asp-action="Umow"
+       class="btn btn-primary">
+        Umów nową wizytę
+    </a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Nie masz jeszcze żadnych wizyt.
+    </div>
+}
+else
+{
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Lekarz</th>
+                <th>Specjalizacja</th>
+                <th>Placówka</th>
+                <th>Termin</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        @item.Lekarz?.Imie
+                        @item.Lekarz?.Nazwisko
+                    </td>
+
+                    <td>
+                        @item.Lekarz?.Specjalizacja?.Nazwa
+                    </td>
+
+                    <td>
+                        @item.Lekarz?.PlacowkaMedyczna?.Nazwa
+                    </td>
+
+                    <td>
+                        @item.DataWizyty.ToString("dd.MM.yyyy HH:mm")
+                    </td>
+
+                    <td>
+                        @item.Status
+                    </td>
+
+                    <td>
+
+                        @if (item.Status ==
+                            MediBook.Models.StatusWizyty.Zaplanowana)
+                        {
+                            <form asp-action="Anuluj"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm">
+                                    Anuluj
+                                </button>
+
+                            </form>
+                        }
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}

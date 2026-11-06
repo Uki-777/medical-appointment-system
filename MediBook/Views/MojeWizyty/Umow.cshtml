@@ -1,0 +1,72 @@
+@model MediBook.ViewModels.UmowWizyteViewModel
+
+@{
+    ViewData["Title"] = "Umów wizytę";
+}
+
+<h1>Umów wizytę</h1>
+
+<form asp-action="Umow"
+      method="post">
+
+    <div asp-validation-summary="All"
+         class="text-danger">
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="LekarzId"
+               class="form-label">
+            Lekarz
+        </label>
+
+        <select asp-for="LekarzId"
+                asp-items="ViewBag.Lekarze"
+                class="form-select">
+
+            <option value="">
+                Wybierz lekarza
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="DataWizyty"
+               class="form-label">
+            Termin wizyty
+        </label>
+
+        <input asp-for="DataWizyty"
+               type="datetime-local"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="Uwagi"
+               class="form-label">
+            Uwagi
+        </label>
+
+        <textarea asp-for="Uwagi"
+                  class="form-control"
+                  rows="4">
+        </textarea>
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Umów wizytę
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Wróć
+    </a>
+
+</form>

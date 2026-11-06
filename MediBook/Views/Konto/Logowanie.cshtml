@@ -1,0 +1,39 @@
+@model MediBook.ViewModels.LogowanieViewModel
+
+<h1>Logowanie</h1>
+
+<form asp-action="Logowanie">
+
+    <div asp-validation-summary="All"
+         class="text-danger">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email"></label>
+        <input asp-for="Email"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Haslo"></label>
+        <input asp-for="Haslo"
+               class="form-control" />
+    </div>
+
+    <div class="form-check mb-3">
+
+        <input asp-for="ZapamietajMnie"
+               class="form-check-input" />
+
+        <label asp-for="ZapamietajMnie"
+               class="form-check-label">
+            Zapamiętaj mnie
+        </label>
+
+    </div>
+
+    <button class="btn btn-primary">
+        Zaloguj
+    </button>
+
+</form>

@@ -2,9 +2,11 @@ using MediBook.Data;
 using MediBook.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MediBook.Controllers;
 
+[Authorize(Roles = "Administrator")]
 public class PacjenciController : Controller
 {
     private readonly ApplicationDbContext _context;

@@ -3,9 +3,11 @@ using MediBook.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MediBook.Controllers;
 
+[Authorize(Roles = "Administrator")]
 public class WizytyController : Controller
 {
     private readonly ApplicationDbContext _context;

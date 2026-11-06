@@ -1,0 +1,45 @@
+@model MediBook.ViewModels.RejestracjaViewModel
+
+<h1>Rejestracja</h1>
+
+<form asp-action="Rejestracja">
+
+    <div asp-validation-summary="All"
+         class="text-danger">
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Imie"></label>
+        <input asp-for="Imie"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Nazwisko"></label>
+        <input asp-for="Nazwisko"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email"></label>
+        <input asp-for="Email"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Haslo"></label>
+        <input asp-for="Haslo"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PowtorzHaslo"></label>
+        <input asp-for="PowtorzHaslo"
+               class="form-control" />
+    </div>
+
+    <button class="btn btn-primary">
+        Zarejestruj
+    </button>
+
+</form>

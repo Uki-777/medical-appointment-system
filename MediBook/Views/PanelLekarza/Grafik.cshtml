@@ -1,0 +1,49 @@
+@model IEnumerable<MediBook.Models.GrafikLekarza>
+
+@{
+    ViewData["Title"] = "Mój grafik";
+}
+
+<h1>Mój grafik</h1>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Od</th>
+            <th>Do</th>
+            <th>Dostępność</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @item.Data.ToString("dd.MM.yyyy")
+                </td>
+
+                <td>
+                    @item.GodzinaOd.ToString(@"hh\:mm")
+                </td>
+
+                <td>
+                    @item.GodzinaDo.ToString(@"hh\:mm")
+                </td>
+
+                <td>
+                    @(item.CzyDostepny
+                        ? "Dostępny"
+                        : "Niedostępny")
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

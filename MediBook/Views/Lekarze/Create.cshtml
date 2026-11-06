@@ -1,29 +1,53 @@
-@model MediBook.Models.Lekarz
+@model MediBook.ViewModels.DodajLekarzaViewModel
+
+@{
+    ViewData["Title"] = "Dodaj lekarza";
+}
 
 <h1>Dodaj lekarza</h1>
 
-<form asp-action="Create">
+<form asp-action="Create"
+      method="post">
+
+    <div asp-validation-summary="All"
+         class="text-danger">
+    </div>
 
     <div class="mb-3">
-
-        <label asp-for="Imie"></label>
+        <label asp-for="Imie"
+               class="form-label">
+            Imię
+        </label>
 
         <input asp-for="Imie"
                class="form-control" />
-
     </div>
 
     <div class="mb-3">
-
-        <label asp-for="Nazwisko"></label>
+        <label asp-for="Nazwisko"
+               class="form-label">
+            Nazwisko
+        </label>
 
         <input asp-for="Nazwisko"
                class="form-control" />
-
     </div>
 
     <div class="mb-3">
+        <label asp-for="Email"
+               class="form-label">
+            Email
+        </label>
 
+        <input asp-for="Email"
+               class="form-control" />
+
+        <span asp-validation-for="Email"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
         <label>Specjalizacja</label>
 
         <select asp-for="SpecjalizacjaId"
@@ -35,11 +59,9 @@
             </option>
 
         </select>
-
     </div>
 
     <div class="mb-3">
-
         <label>Placówka</label>
 
         <select asp-for="PlacowkaMedycznaId"
@@ -51,11 +73,21 @@
             </option>
 
         </select>
-
     </div>
 
-    <button class="btn btn-primary">
-        Zapisz
+    <div class="mb-3">
+        <label asp-for="HasloStartowe"
+               class="form-label">
+            Hasło startowe
+        </label>
+
+        <input asp-for="HasloStartowe"
+               class="form-control" />
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Dodaj lekarza
     </button>
 
     <a asp-action="Index"

@@ -14,6 +14,13 @@ public class Lekarz
     [MaxLength(100)]
     public string Nazwisko { get; set; } = string.Empty;
 
+    [MaxLength(150)]
+    public string? Email { get; set; }
+
+    public string? UzytkownikId { get; set; }
+
+    public Uzytkownik? Uzytkownik { get; set; }
+
     [Required]
     public int SpecjalizacjaId { get; set; }
 
