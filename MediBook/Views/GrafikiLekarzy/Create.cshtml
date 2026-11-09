@@ -1,16 +1,24 @@
 @model MediBook.Models.GrafikLekarza
 
+@{
+    ViewData["Title"] = "Dodaj grafik";
+}
+
 <h1>Dodaj grafik lekarza</h1>
 
-<form asp-action="Create">
+<form asp-action="Create"
+      method="post">
 
     <div asp-validation-summary="All"
-         class="text-danger">
+         class="text-danger mb-3">
     </div>
 
     <div class="mb-3">
 
-        <label>Lekarz</label>
+        <label asp-for="LekarzId"
+               class="form-label">
+            Lekarz
+        </label>
 
         <select asp-for="LekarzId"
                 asp-items="ViewBag.Lekarze"
@@ -22,35 +30,63 @@
 
         </select>
 
+        <span asp-validation-for="LekarzId"
+              class="text-danger">
+        </span>
+
     </div>
 
     <div class="mb-3">
 
-        <label asp-for="Data"></label>
+        <label asp-for="Data"
+               class="form-label">
+            Data
+        </label>
 
         <input asp-for="Data"
                type="date"
-               class="form-control" />
+               class="form-control"
+               min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+        <span asp-validation-for="Data"
+              class="text-danger">
+        </span>
 
     </div>
 
     <div class="mb-3">
 
-        <label asp-for="GodzinaOd"></label>
+        <label asp-for="GodzinaOd"
+               class="form-label">
+            Godzina od
+        </label>
 
         <input asp-for="GodzinaOd"
                type="time"
+               step="1800"
                class="form-control" />
+
+        <span asp-validation-for="GodzinaOd"
+              class="text-danger">
+        </span>
 
     </div>
 
     <div class="mb-3">
 
-        <label asp-for="GodzinaDo"></label>
+        <label asp-for="GodzinaDo"
+               class="form-label">
+            Godzina do
+        </label>
 
         <input asp-for="GodzinaDo"
                type="time"
+               step="1800"
                class="form-control" />
+
+        <span asp-validation-for="GodzinaDo"
+              class="text-danger">
+        </span>
 
     </div>
 
@@ -66,13 +102,26 @@
 
     </div>
 
-    <button class="btn btn-primary">
+    <button type="submit"
+            class="btn btn-primary">
+
         Zapisz
+
     </button>
 
     <a asp-action="Index"
        class="btn btn-secondary">
+
         Wróć
+
     </a>
 
 </form>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

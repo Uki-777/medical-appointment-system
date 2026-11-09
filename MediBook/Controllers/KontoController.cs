@@ -9,22 +9,40 @@ namespace MediBook.Controllers;
 
 public class KontoController : Controller
 {
-    private readonly UserManager<Uzytkownik> _userManager;
-    private readonly SignInManager<Uzytkownik> _signInManager;
-    private readonly ApplicationDbContext _context;
+    private readonly UserManager<Uzytkownik>
+        _userManager;
+
+    private readonly SignInManager<Uzytkownik>
+        _signInManager;
+
+    private readonly ApplicationDbContext
+        _context;
 
     public KontoController(
         UserManager<Uzytkownik> userManager,
         SignInManager<Uzytkownik> signInManager,
         ApplicationDbContext context)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _context = context;
+        _userManager =
+            userManager;
+
+        _signInManager =
+            signInManager;
+
+        _context =
+            context;
     }
 
     public IActionResult Rejestracja()
     {
+        if (User.Identity != null &&
+            User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction(
+                "Index",
+                "Home");
+        }
+
         return View();
     }
 
@@ -33,60 +51,162 @@ public class KontoController : Controller
     public async Task<IActionResult> Rejestracja(
         RejestracjaViewModel model)
     {
-        if (!ModelState.IsValid)
-            return View(model);
-
-        var uzytkownik = new Uzytkownik
+        if (User.Identity != null &&
+            User.Identity.IsAuthenticated)
         {
-            UserName = model.Email,
-            Email = model.Email,
-            Imie = model.Imie,
-            Nazwisko = model.Nazwisko
-        };
-
-        var wynik = await _userManager.CreateAsync(
-            uzytkownik,
-            model.Haslo);
-
-        if (wynik.Succeeded)
-        {
-            await _userManager.AddToRoleAsync(
-                uzytkownik,
-                "Pacjent");
-
-            var pacjent = new Pacjent
-            {
-                Imie = model.Imie,
-                Nazwisko = model.Nazwisko,
-                Email = model.Email,
-                UzytkownikId = uzytkownik.Id
-            };
-
-            _context.Pacjenci.Add(pacjent);
-
-            await _context.SaveChangesAsync();
-
-            await _signInManager.SignInAsync(
-                uzytkownik,
-                false);
-
             return RedirectToAction(
                 "Index",
                 "Home");
         }
 
-        foreach (var blad in wynik.Errors)
+        if (!ModelState.IsValid)
         {
-            ModelState.AddModelError(
-                "",
-                blad.Description);
+            return View(model);
         }
 
-        return View(model);
+        var istniejeUzytkownik =
+            await _userManager
+                .FindByEmailAsync(
+                    model.Email);
+
+        if (istniejeUzytkownik != null)
+        {
+            ModelState.AddModelError(
+                "Email",
+                "Konto z takim adresem email już istnieje.");
+
+            return View(model);
+        }
+
+        var istniejePacjent =
+            await _context.Pacjenci
+                .AnyAsync(x =>
+                    x.Email ==
+                    model.Email);
+
+        if (istniejePacjent)
+        {
+            ModelState.AddModelError(
+                "Email",
+                "Pacjent z takim adresem email już istnieje.");
+
+            return View(model);
+        }
+
+        var uzytkownik =
+            new Uzytkownik
+            {
+                UserName =
+                    model.Email,
+
+                Email =
+                    model.Email,
+
+                Imie =
+                    model.Imie,
+
+                Nazwisko =
+                    model.Nazwisko
+            };
+
+        var wynik =
+            await _userManager
+                .CreateAsync(
+                    uzytkownik,
+                    model.Haslo);
+
+        if (!wynik.Succeeded)
+        {
+            foreach (var blad
+                     in wynik.Errors)
+            {
+                ModelState.AddModelError(
+                    "",
+                    blad.Description);
+            }
+
+            return View(model);
+        }
+
+        var wynikRoli =
+            await _userManager
+                .AddToRoleAsync(
+                    uzytkownik,
+                    "Pacjent");
+
+        if (!wynikRoli.Succeeded)
+        {
+            await _userManager
+                .DeleteAsync(
+                    uzytkownik);
+
+            ModelState.AddModelError(
+                "",
+                "Nie udało się utworzyć konta pacjenta.");
+
+            return View(model);
+        }
+
+        var pacjent =
+            new Pacjent
+            {
+                Imie =
+                    model.Imie,
+
+                Nazwisko =
+                    model.Nazwisko,
+
+                Email =
+                    model.Email,
+
+                UzytkownikId =
+                    uzytkownik.Id
+            };
+
+        _context.Pacjenci.Add(
+            pacjent);
+
+        try
+        {
+            await _context
+                .SaveChangesAsync();
+        }
+        catch
+        {
+            await _userManager
+                .DeleteAsync(
+                    uzytkownik);
+
+            ModelState.AddModelError(
+                "",
+                "Nie udało się zakończyć rejestracji.");
+
+            return View(model);
+        }
+
+        await _signInManager
+            .SignInAsync(
+                uzytkownik,
+                false);
+
+        TempData["Sukces"] =
+            "Konto zostało utworzone.";
+
+        return RedirectToAction(
+            "Index",
+            "Home");
     }
 
     public IActionResult Logowanie()
     {
+        if (User.Identity != null &&
+            User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction(
+                "Index",
+                "Home");
+        }
+
         return View();
     }
 
@@ -95,15 +215,26 @@ public class KontoController : Controller
     public async Task<IActionResult> Logowanie(
         LogowanieViewModel model)
     {
+        if (User.Identity != null &&
+            User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction(
+                "Index",
+                "Home");
+        }
+
         if (!ModelState.IsValid)
+        {
             return View(model);
+        }
 
         var wynik =
-            await _signInManager.PasswordSignInAsync(
-                model.Email,
-                model.Haslo,
-                model.ZapamietajMnie,
-                false);
+            await _signInManager
+                .PasswordSignInAsync(
+                    model.Email,
+                    model.Haslo,
+                    model.ZapamietajMnie,
+                    false);
 
         if (wynik.Succeeded)
         {
@@ -123,7 +254,8 @@ public class KontoController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Wyloguj()
     {
-        await _signInManager.SignOutAsync();
+        await _signInManager
+            .SignOutAsync();
 
         return RedirectToAction(
             "Index",

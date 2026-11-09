@@ -23,41 +23,49 @@ public class PanelLekarzaController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var lekarz = await PobierzLekarza();
+        var lekarz =
+            await PobierzLekarza();
 
         if (lekarz == null)
             return NotFound();
 
-        var wizyty = await _context.Wizyty
-            .Where(x => x.LekarzId == lekarz.Id)
-            .Include(x => x.Pacjent)
-            .OrderBy(x => x.DataWizyty)
-            .ToListAsync();
+        var wizyty =
+            await _context.Wizyty
+                .Where(x =>
+                    x.LekarzId == lekarz.Id)
+                .Include(x => x.Pacjent)
+                .OrderBy(x => x.DataWizyty)
+                .ToListAsync();
 
         return View(wizyty);
     }
 
     public async Task<IActionResult> Grafik()
     {
-        var lekarz = await PobierzLekarza();
+        var lekarz =
+            await PobierzLekarza();
 
         if (lekarz == null)
             return NotFound();
 
-        var grafik = await _context.GrafikiLekarzy
-            .Where(x => x.LekarzId == lekarz.Id)
-            .OrderBy(x => x.Data)
-            .ThenBy(x => x.GodzinaOd)
-            .ToListAsync();
+        var grafik =
+            await _context.GrafikiLekarzy
+                .Where(x =>
+                    x.LekarzId == lekarz.Id)
+                .OrderBy(x => x.Data)
+                .ThenBy(x => x.GodzinaOd)
+                .ToListAsync();
 
         return View(grafik);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Zakoncz(int id)
+    public async Task<IActionResult> Zakoncz(
+        int id)
     {
-        var lekarz = await PobierzLekarza();
+        var lekarz =
+            await PobierzLekarza();
 
         if (lekarz == null)
             return NotFound();
@@ -71,23 +79,30 @@ public class PanelLekarzaController : Controller
         if (wizyta == null)
             return NotFound();
 
-        if (wizyta.Status ==
+        if (wizyta.Status !=
             StatusWizyty.Zaplanowana)
         {
-            wizyta.Status =
-                StatusWizyty.Zakonczona;
+            TempData["Blad"] =
+                "Status tej wizyty nie może zostać zmieniony.";
 
-            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
+        wizyta.Status =
+            StatusWizyty.Zakonczona;
+
+        await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Nieobecnosc(int id)
+    public async Task<IActionResult> Nieobecnosc(
+        int id)
     {
-        var lekarz = await PobierzLekarza();
+        var lekarz =
+            await PobierzLekarza();
 
         if (lekarz == null)
             return NotFound();
@@ -101,19 +116,25 @@ public class PanelLekarzaController : Controller
         if (wizyta == null)
             return NotFound();
 
-        if (wizyta.Status ==
+        if (wizyta.Status !=
             StatusWizyty.Zaplanowana)
         {
-            wizyta.Status =
-                StatusWizyty.Nieobecnosc;
+            TempData["Blad"] =
+                "Status tej wizyty nie może zostać zmieniony.";
 
-            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
+        wizyta.Status =
+            StatusWizyty.Nieobecnosc;
+
+        await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task<Lekarz?> PobierzLekarza()
+    private async Task<Lekarz?>
+        PobierzLekarza()
     {
         var uzytkownik =
             await _userManager.GetUserAsync(User);
@@ -125,6 +146,7 @@ public class PanelLekarzaController : Controller
             .Include(x => x.Specjalizacja)
             .Include(x => x.PlacowkaMedyczna)
             .FirstOrDefaultAsync(x =>
-                x.UzytkownikId == uzytkownik.Id);
+                x.UzytkownikId ==
+                uzytkownik.Id);
     }
 }

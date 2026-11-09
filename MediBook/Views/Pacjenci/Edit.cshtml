@@ -1,46 +1,122 @@
 @model MediBook.Models.Pacjent
 
+@{
+    ViewData["Title"] = "Edytuj pacjenta";
+}
+
 <h1>Edytuj pacjenta</h1>
 
-<form asp-action="Create">
-    <input type="hidden" asp-for="Id" />
+<form asp-action="Edit"
+      method="post">
 
-    <div class="mb-3">
-        <label asp-for="Imie"></label>
-        <input asp-for="Imie" class="form-control" />
+    <input type="hidden"
+           asp-for="Id" />
+
+    <div asp-validation-summary="All"
+         class="text-danger mb-3">
     </div>
 
     <div class="mb-3">
-        <label asp-for="Nazwisko"></label>
-        <input asp-for="Nazwisko" class="form-control" />
+
+        <label asp-for="Imie"
+               class="form-label">
+            Imię
+        </label>
+
+        <input asp-for="Imie"
+               class="form-control" />
+
+        <span asp-validation-for="Imie"
+              class="text-danger">
+        </span>
+
     </div>
 
     <div class="mb-3">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
+
+        <label asp-for="Nazwisko"
+               class="form-label">
+            Nazwisko
+        </label>
+
+        <input asp-for="Nazwisko"
+               class="form-control" />
+
+        <span asp-validation-for="Nazwisko"
+              class="text-danger">
+        </span>
+
     </div>
 
     <div class="mb-3">
-        <label asp-for="NumerTelefonu"></label>
-        <input asp-for="NumerTelefonu" class="form-control" />
+
+        <label asp-for="Email"
+               class="form-label">
+            Email
+        </label>
+
+        <input asp-for="Email"
+               class="form-control" />
+
+        <span asp-validation-for="Email"
+              class="text-danger">
+        </span>
+
     </div>
 
     <div class="mb-3">
-        <label asp-for="DataUrodzenia"></label>
+
+        <label asp-for="NumerTelefonu"
+               class="form-label">
+            Numer telefonu
+        </label>
+
+        <input asp-for="NumerTelefonu"
+               class="form-control" />
+
+        <span asp-validation-for="NumerTelefonu"
+              class="text-danger">
+        </span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="DataUrodzenia"
+               class="form-label">
+            Data urodzenia
+        </label>
 
         <input asp-for="DataUrodzenia"
                type="date"
                class="form-control" />
 
+        <span asp-validation-for="DataUrodzenia"
+              class="text-danger">
+        </span>
+
     </div>
 
-    <button class="btn btn-primary">
-        Zapisz
+    <button type="submit"
+            class="btn btn-primary">
+
+        Zapisz zmiany
+
     </button>
 
     <a asp-action="Index"
        class="btn btn-secondary">
+
         Wróć
+
     </a>
 
 </form>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

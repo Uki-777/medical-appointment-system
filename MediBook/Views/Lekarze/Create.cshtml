@@ -81,8 +81,13 @@
             Hasło startowe
         </label>
 
-        <input asp-for="HasloStartowe"
-               class="form-control" />
+            <input asp-for="HasloStartowe"
+            type="password"
+            class="form-control" />
+
+        <span asp-validation-for="HasloStartowe"
+            class="text-danger">
+        </span>
     </div>
 
     <button type="submit"

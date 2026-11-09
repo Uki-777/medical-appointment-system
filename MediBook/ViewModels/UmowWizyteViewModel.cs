@@ -8,7 +8,11 @@ public class UmowWizyteViewModel
     public int LekarzId { get; set; }
 
     [Required]
-    public DateTime DataWizyty { get; set; }
+    [DataType(DataType.Date)]
+    public DateTime Data { get; set; }
+
+    [Required]
+    public string Godzina { get; set; } = string.Empty;
 
     [MaxLength(500)]
     public string? Uwagi { get; set; }

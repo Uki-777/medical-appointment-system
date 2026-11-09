@@ -1,8 +1,203 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Strona główna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-section">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            System rezerwacji wizyt medycznych
+        </div>
+
+        <h1>
+            Twoje wizyty medyczne
+            <span>w jednym miejscu</span>
+        </h1>
+
+        <p>
+            MediBook umożliwia szybkie umawianie wizyt,
+            zarządzanie terminami lekarzy oraz wygodną
+            obsługę pacjentów.
+        </p>
+
+        <div class="hero-actions">
+
+            @if (User.IsInRole("Pacjent"))
+            {
+                <a asp-controller="MojeWizyty"
+                   asp-action="Umow"
+                   class="btn btn-medibook-primary">
+
+                    Umów wizytę
+
+                </a>
+
+                <a asp-controller="MojeWizyty"
+                   asp-action="Index"
+                   class="btn btn-medibook-secondary">
+
+                    Moje wizyty
+
+                </a>
+            }
+            else if (User.IsInRole("Lekarz"))
+            {
+                <a asp-controller="PanelLekarza"
+                   asp-action="Index"
+                   class="btn btn-medibook-primary">
+
+                    Zobacz wizyty
+
+                </a>
+
+                <a asp-controller="PanelLekarza"
+                   asp-action="Grafik"
+                   class="btn btn-medibook-secondary">
+
+                    Mój grafik
+
+                </a>
+            }
+            else if (User.IsInRole("Administrator"))
+            {
+                <a asp-controller="PanelAdministratora"
+                   asp-action="Index"
+                   class="btn btn-medibook-primary">
+
+                    Panel administratora
+
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Konto"
+                   asp-action="Rejestracja"
+                   class="btn btn-medibook-primary">
+
+                    Załóż konto
+
+                </a>
+
+                <a asp-controller="Konto"
+                   asp-action="Logowanie"
+                   class="btn btn-medibook-secondary">
+
+                    Zaloguj się
+
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+    <div class="hero-card">
+
+        <div class="hero-card-icon">
+            +
+        </div>
+
+        <h3>
+            MediBook
+        </h3>
+
+        <p>
+            Prosty i bezpieczny system obsługi
+            wizyt medycznych.
+        </p>
+
+        <div class="hero-card-line">
+
+            <span>
+                Pacjenci
+            </span>
+
+            <strong>
+                Rezerwacja wizyt
+            </strong>
+
+        </div>
+
+        <div class="hero-card-line">
+
+            <span>
+                Lekarze
+            </span>
+
+            <strong>
+                Grafik i wizyty
+            </strong>
+
+        </div>
+
+        <div class="hero-card-line">
+
+            <span>
+                Administrator
+            </span>
+
+            <strong>
+                Zarządzanie systemem
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="features-section">
+
+    <div class="feature-card">
+
+        <div class="feature-number">
+            01
+        </div>
+
+        <h3>
+            Wybierz lekarza
+        </h3>
+
+        <p>
+            Wybierz lekarza według specjalizacji
+            i placówki medycznej.
+        </p>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-number">
+            02
+        </div>
+
+        <h3>
+            Wybierz termin
+        </h3>
+
+        <p>
+            System wyświetla wyłącznie dostępne
+            terminy zgodne z grafikiem lekarza.
+        </p>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-number">
+            03
+        </div>
+
+        <h3>
+            Zarządzaj wizytami
+        </h3>
+
+        <p>
+            Pacjent i lekarz mogą wygodnie
+            zarządzać swoimi wizytami.
+        </p>
+
+    </div>
+
+</section>

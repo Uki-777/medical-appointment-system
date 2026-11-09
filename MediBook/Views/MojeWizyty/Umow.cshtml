@@ -10,7 +10,7 @@
       method="post">
 
     <div asp-validation-summary="All"
-         class="text-danger">
+         class="text-danger mb-3">
     </div>
 
     <div class="mb-3">
@@ -22,6 +22,7 @@
 
         <select asp-for="LekarzId"
                 asp-items="ViewBag.Lekarze"
+                id="lekarzSelect"
                 class="form-select">
 
             <option value="">
@@ -30,18 +31,58 @@
 
         </select>
 
+        <span asp-validation-for="LekarzId"
+              class="text-danger">
+        </span>
+
     </div>
 
     <div class="mb-3">
 
-        <label asp-for="DataWizyty"
+        <label asp-for="Data"
                class="form-label">
-            Termin wizyty
+            Data wizyty
         </label>
 
-        <input asp-for="DataWizyty"
-               type="datetime-local"
-               class="form-control" />
+        <input asp-for="Data"
+               type="date"
+               id="dataInput"
+               class="form-control"
+               min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+        <span asp-validation-for="Data"
+              class="text-danger">
+        </span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="Godzina"
+               class="form-label">
+            Dostępna godzina
+        </label>
+
+        <select asp-for="Godzina"
+                id="godzinaSelect"
+                class="form-select">
+
+            <option value="">
+                Najpierw wybierz lekarza i datę
+            </option>
+
+        </select>
+
+        <span asp-validation-for="Godzina"
+              class="text-danger">
+        </span>
+
+    </div>
+
+    <div id="brakTerminow"
+         class="alert alert-warning d-none">
+
+        Brak wolnych terminów w wybranym dniu.
 
     </div>
 
@@ -70,3 +111,110 @@
     </a>
 
 </form>
+
+@section Scripts
+{
+    <script>
+        const lekarzSelect =
+            document.getElementById("lekarzSelect");
+
+        const dataInput =
+            document.getElementById("dataInput");
+
+        const godzinaSelect =
+            document.getElementById("godzinaSelect");
+
+        const brakTerminow =
+            document.getElementById("brakTerminow");
+
+        async function pobierzGodziny() {
+
+            const lekarzId =
+                lekarzSelect.value;
+
+            const data =
+                dataInput.value;
+
+            godzinaSelect.innerHTML = "";
+
+            brakTerminow.classList.add("d-none");
+
+            if (!lekarzId || !data) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = "";
+
+                option.textContent =
+                    "Najpierw wybierz lekarza i datę";
+
+                godzinaSelect.appendChild(option);
+
+                return;
+            }
+
+            const url =
+                `/MojeWizyty/PobierzDostepneGodziny?lekarzId=${lekarzId}&data=${data}`;
+
+            const response =
+                await fetch(url);
+
+            const godziny =
+                await response.json();
+
+            if (godziny.length === 0) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = "";
+
+                option.textContent =
+                    "Brak wolnych terminów";
+
+                godzinaSelect.appendChild(option);
+
+                brakTerminow.classList.remove("d-none");
+
+                return;
+            }
+
+            const pierwszaOpcja =
+                document.createElement("option");
+
+            pierwszaOpcja.value = "";
+
+            pierwszaOpcja.textContent =
+                "Wybierz godzinę";
+
+            godzinaSelect.appendChild(
+                pierwszaOpcja);
+
+            godziny.forEach(godzina => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = godzina;
+
+                option.textContent = godzina;
+
+                godzinaSelect.appendChild(option);
+            });
+        }
+
+        lekarzSelect.addEventListener(
+            "change",
+            pobierzGodziny);
+
+        dataInput.addEventListener(
+            "change",
+            pobierzGodziny);
+    </script>
+
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

@@ -1,9 +1,9 @@
 using MediBook.Data;
 using MediBook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MediBook.Controllers;
 
@@ -22,9 +22,9 @@ public class WizytyController : Controller
         var wizyty = await _context.Wizyty
             .Include(x => x.Pacjent)
             .Include(x => x.Lekarz)
-            .ThenInclude(x => x.Specjalizacja)
+                .ThenInclude(x => x!.Specjalizacja)
             .Include(x => x.Lekarz)
-            .ThenInclude(x => x.PlacowkaMedyczna)
+                .ThenInclude(x => x!.PlacowkaMedyczna)
             .OrderBy(x => x.DataWizyty)
             .ToListAsync();
 
@@ -42,21 +42,48 @@ public class WizytyController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Wizyta wizyta)
     {
-        var zajetyTermin =
-            await _context.Wizyty.AnyAsync(x =>
-                x.LekarzId == wizyta.LekarzId &&
-                x.DataWizyty == wizyta.DataWizyty &&
-                x.Status != StatusWizyty.Anulowana);
+        var pacjentIstnieje =
+            await _context.Pacjenci.AnyAsync(x =>
+                x.Id == wizyta.PacjentId);
 
-        if (zajetyTermin)
+        if (!pacjentIstnieje)
+        {
+            ModelState.AddModelError(
+                "PacjentId",
+                "Wybrany pacjent nie istnieje.");
+        }
+
+        var lekarzIstnieje =
+            await _context.Lekarze.AnyAsync(x =>
+                x.Id == wizyta.LekarzId);
+
+        if (!lekarzIstnieje)
+        {
+            ModelState.AddModelError(
+                "LekarzId",
+                "Wybrany lekarz nie istnieje.");
+        }
+
+        if (wizyta.DataWizyty <= DateTime.Now)
         {
             ModelState.AddModelError(
                 "",
-                "Wybrany termin jest już zajęty.");
+                "Nie można umówić wizyty w przeszłości.");
         }
 
-        var data = wizyta.DataWizyty.Date;
-        var godzina = wizyta.DataWizyty.TimeOfDay;
+        if (wizyta.DataWizyty.Minute != 0 &&
+            wizyta.DataWizyty.Minute != 30)
+        {
+            ModelState.AddModelError(
+                "",
+                "Wizyty można umawiać co 30 minut.");
+        }
+
+        var data =
+            wizyta.DataWizyty.Date;
+
+        var godzina =
+            wizyta.DataWizyty.TimeOfDay;
 
         var dostepnyGrafik =
             await _context.GrafikiLekarzy.AnyAsync(x =>
@@ -64,7 +91,8 @@ public class WizytyController : Controller
                 x.Data.Date == data &&
                 x.CzyDostepny &&
                 godzina >= x.GodzinaOd &&
-                godzina < x.GodzinaDo);
+                godzina.Add(
+                    TimeSpan.FromMinutes(30)) <= x.GodzinaDo);
 
         if (!dostepnyGrafik)
         {
@@ -73,11 +101,22 @@ public class WizytyController : Controller
                 "Lekarz nie jest dostępny w wybranym terminie.");
         }
 
-        if (wizyta.DataWizyty <= DateTime.Now)
+        var koniecNowejWizyty =
+            wizyta.DataWizyty.AddMinutes(30);
+
+        var zajetyTermin =
+            await _context.Wizyty.AnyAsync(x =>
+                x.LekarzId == wizyta.LekarzId &&
+                x.Status != StatusWizyty.Anulowana &&
+                x.DataWizyty < koniecNowejWizyty &&
+                x.DataWizyty.AddMinutes(30) >
+                wizyta.DataWizyty);
+
+        if (zajetyTermin)
         {
             ModelState.AddModelError(
                 "",
-                "Nie można umówić wizyty w przeszłości.");
+                "Wybrany termin jest już zajęty.");
         }
 
         if (!ModelState.IsValid)
@@ -104,7 +143,11 @@ public class WizytyController : Controller
         var wizyta =
             await _context.Wizyty.FindAsync(id);
 
-        if (wizyta != null)
+        if (wizyta == null)
+            return NotFound();
+
+        if (wizyta.Status ==
+            StatusWizyty.Zaplanowana)
         {
             wizyta.Status =
                 StatusWizyty.Anulowana;
@@ -122,7 +165,11 @@ public class WizytyController : Controller
         var wizyta =
             await _context.Wizyty.FindAsync(id);
 
-        if (wizyta != null)
+        if (wizyta == null)
+            return NotFound();
+
+        if (wizyta.Status ==
+            StatusWizyty.Zaplanowana)
         {
             wizyta.Status =
                 StatusWizyty.Zakonczona;
@@ -137,12 +184,16 @@ public class WizytyController : Controller
     {
         ViewBag.Pacjenci =
             new SelectList(
-                _context.Pacjenci.Select(x => new
-                {
-                    x.Id,
-                    Nazwa =
-                        x.Imie + " " + x.Nazwisko
-                }),
+                _context.Pacjenci
+                    .OrderBy(x => x.Nazwisko)
+                    .ThenBy(x => x.Imie)
+                    .Select(x => new
+                    {
+                        x.Id,
+                        Nazwa =
+                            x.Imie + " " +
+                            x.Nazwisko
+                    }),
                 "Id",
                 "Nazwa");
 
@@ -150,13 +201,15 @@ public class WizytyController : Controller
             new SelectList(
                 _context.Lekarze
                     .Include(x => x.Specjalizacja)
+                    .OrderBy(x => x.Nazwisko)
+                    .ThenBy(x => x.Imie)
                     .Select(x => new
                     {
                         x.Id,
                         Nazwa =
-                            x.Imie + " "
-                            + x.Nazwisko + " - "
-                            + x.Specjalizacja!.Nazwa
+                            x.Imie + " " +
+                            x.Nazwisko + " - " +
+                            x.Specjalizacja!.Nazwa
                     }),
                 "Id",
                 "Nazwa");

@@ -1,8 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="pl">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - MediBook</title>
 
     <link rel="stylesheet"
@@ -15,44 +20,50 @@
     <link rel="stylesheet"
           href="~/MediBook.styles.css"
           asp-append-version="true" />
+
 </head>
 
 <body>
 
 <header>
 
-    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-lg medibook-navbar">
 
-        <div class="container-fluid">
+        <div class="container">
 
-            <a class="navbar-brand"
+            <a class="navbar-brand medibook-logo"
                asp-controller="Home"
                asp-action="Index">
+
                 MediBook
+
             </a>
 
             <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent"
+                    data-bs-target="#navbarMain"
+                    aria-controls="navbarMain"
                     aria-expanded="false"
-                    aria-label="Toggle navigation">
+                    aria-label="Przełącz nawigację">
 
                 <span class="navbar-toggler-icon"></span>
 
             </button>
 
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <div class="collapse navbar-collapse"
+                 id="navbarMain">
 
-                <ul class="navbar-nav flex-grow-1">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
 
-                        <a class="nav-link text-dark"
+                        <a class="nav-link"
                            asp-controller="Home"
                            asp-action="Index">
+
                             Strona główna
+
                         </a>
 
                     </li>
@@ -61,60 +72,84 @@
                     {
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
+                               asp-controller="PanelAdministratora"
+                               asp-action="Index">
+
+                                Panel
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
                                asp-controller="Specjalizacje"
                                asp-action="Index">
+
                                 Specjalizacje
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="PlacowkiMedyczne"
                                asp-action="Index">
+
                                 Placówki
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="Lekarze"
                                asp-action="Index">
+
                                 Lekarze
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="Pacjenci"
                                asp-action="Index">
+
                                 Pacjenci
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="GrafikiLekarzy"
                                asp-action="Index">
+
                                 Grafik
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="Wizyty"
                                asp-action="Index">
+
                                 Wizyty
+
                             </a>
 
                         </li>
@@ -124,10 +159,12 @@
                     {
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="MojeWizyty"
                                asp-action="Index">
+
                                 Moje wizyty
+
                             </a>
 
                         </li>
@@ -137,20 +174,24 @@
                     {
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="PanelLekarza"
                                asp-action="Index">
+
                                 Moje wizyty
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="PanelLekarza"
                                asp-action="Grafik">
+
                                 Mój grafik
+
                             </a>
 
                         </li>
@@ -158,15 +199,17 @@
 
                 </ul>
 
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-lg-center">
 
                     @if (User.Identity != null &&
                          User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
 
-                            <span class="nav-link text-dark">
+                            <span class="nav-link medibook-user">
+
                                 @User.Identity.Name
+
                             </span>
 
                         </li>
@@ -178,8 +221,10 @@
                                   method="post">
 
                                 <button type="submit"
-                                        class="nav-link btn btn-link text-dark">
+                                        class="btn medibook-logout">
+
                                     Wyloguj
+
                                 </button>
 
                             </form>
@@ -188,22 +233,26 @@
                     }
                     else
                     {
-                        <li class="nav-item">
+                        <li class="nav-item me-lg-2">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="Konto"
                                asp-action="Logowanie">
+
                                 Zaloguj
+
                             </a>
 
                         </li>
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="btn medibook-register"
                                asp-controller="Konto"
                                asp-action="Rejestracja">
+
                                 Rejestracja
+
                             </a>
 
                         </li>
@@ -219,22 +268,59 @@
 
 </header>
 
-<div class="container">
-
-    <main role="main"
-          class="pb-3">
-
-        @RenderBody()
-
-    </main>
-
-</div>
-
-<footer class="border-top footer text-muted">
+<main class="main-content">
 
     <div class="container">
 
-        &copy; 2026 - MediBook
+        @if (TempData["Blad"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
+
+                @TempData["Blad"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Zamknij">
+                </button>
+
+            </div>
+        }
+
+        @if (TempData["Sukces"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show"
+                 role="alert">
+
+                @TempData["Sukces"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Zamknij">
+                </button>
+
+            </div>
+        }
+
+        @RenderBody()
+
+    </div>
+
+</main>
+
+<footer class="medibook-footer">
+
+    <div class="container">
+
+        <span>
+            © 2026 MediBook
+        </span>
+
+        <span>
+            System umawiania wizyt medycznych
+        </span>
 
     </div>
 
@@ -251,4 +337,5 @@
 @await RenderSectionAsync("Scripts", required: false)
 
 </body>
+
 </html>

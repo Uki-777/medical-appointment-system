@@ -1,0 +1,209 @@
+@model MediBook.ViewModels.PanelAdministratoraViewModel
+
+@{
+    ViewData["Title"] = "Panel administratora";
+}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="page-subtitle">
+            Administracja
+        </span>
+
+        <h1>
+            Panel administratora
+        </h1>
+
+        <p>
+            Podsumowanie najważniejszych danych systemu MediBook.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="dashboard-grid">
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-label">
+            Pacjenci
+        </span>
+
+        <strong class="dashboard-value">
+            @Model.LiczbaPacjentow
+        </strong>
+
+        <a asp-controller="Pacjenci"
+           asp-action="Index"
+           class="dashboard-link">
+
+            Zobacz pacjentów →
+
+        </a>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-label">
+            Lekarze
+        </span>
+
+        <strong class="dashboard-value">
+            @Model.LiczbaLekarzy
+        </strong>
+
+        <a asp-controller="Lekarze"
+           asp-action="Index"
+           class="dashboard-link">
+
+            Zobacz lekarzy →
+
+        </a>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-label">
+            Placówki
+        </span>
+
+        <strong class="dashboard-value">
+            @Model.LiczbaPlacowek
+        </strong>
+
+        <a asp-controller="PlacowkiMedyczne"
+           asp-action="Index"
+           class="dashboard-link">
+
+            Zobacz placówki →
+
+        </a>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-label">
+            Wszystkie wizyty
+        </span>
+
+        <strong class="dashboard-value">
+            @Model.LiczbaWizyt
+        </strong>
+
+        <a asp-controller="Wizyty"
+           asp-action="Index"
+           class="dashboard-link">
+
+            Zobacz wizyty →
+
+        </a>
+
+    </div>
+
+    <div class="dashboard-card dashboard-card-highlight">
+
+        <span class="dashboard-label">
+            Dzisiejsze wizyty
+        </span>
+
+        <strong class="dashboard-value">
+            @Model.LiczbaDzisiejszychWizyt
+        </strong>
+
+        <span class="dashboard-description">
+            Aktywne wizyty zaplanowane na dzisiaj
+        </span>
+
+    </div>
+
+    <div class="dashboard-card dashboard-card-highlight">
+
+        <span class="dashboard-label">
+            Nadchodzące wizyty
+        </span>
+
+        <strong class="dashboard-value">
+            @Model.LiczbaNadchodzacychWizyt
+        </strong>
+
+        <span class="dashboard-description">
+            Wszystkie przyszłe zaplanowane wizyty
+        </span>
+
+    </div>
+
+</div>
+
+<div class="admin-actions">
+
+    <h2>
+        Szybkie akcje
+    </h2>
+
+    <div class="admin-actions-grid">
+
+        <a asp-controller="Lekarze"
+           asp-action="Create"
+           class="admin-action">
+
+            <strong>
+                Dodaj lekarza
+            </strong>
+
+            <span>
+                Utwórz konto i profil nowego lekarza
+            </span>
+
+        </a>
+
+        <a asp-controller="GrafikiLekarzy"
+           asp-action="Create"
+           class="admin-action">
+
+            <strong>
+                Dodaj grafik
+            </strong>
+
+            <span>
+                Ustal dostępność lekarza
+            </span>
+
+        </a>
+
+        <a asp-controller="Specjalizacje"
+           asp-action="Create"
+           class="admin-action">
+
+            <strong>
+                Dodaj specjalizację
+            </strong>
+
+            <span>
+                Dodaj nową specjalizację medyczną
+            </span>
+
+        </a>
+
+        <a asp-controller="PlacowkiMedyczne"
+           asp-action="Create"
+           class="admin-action">
+
+            <strong>
+                Dodaj placówkę
+            </strong>
+
+            <span>
+                Dodaj nową placówkę medyczną
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
