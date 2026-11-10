@@ -9,28 +9,18 @@ namespace MediBook.Controllers;
 
 public class KontoController : Controller
 {
-    private readonly UserManager<Uzytkownik>
-        _userManager;
-
-    private readonly SignInManager<Uzytkownik>
-        _signInManager;
-
-    private readonly ApplicationDbContext
-        _context;
+    private readonly UserManager<Uzytkownik> _userManager;
+    private readonly SignInManager<Uzytkownik> _signInManager;
+    private readonly ApplicationDbContext _context;
 
     public KontoController(
         UserManager<Uzytkownik> userManager,
         SignInManager<Uzytkownik> signInManager,
         ApplicationDbContext context)
     {
-        _userManager =
-            userManager;
-
-        _signInManager =
-            signInManager;
-
-        _context =
-            context;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _context = context;
     }
 
     public IActionResult Rejestracja()
@@ -64,6 +54,11 @@ public class KontoController : Controller
             return View(model);
         }
 
+        model.Email =
+            model.Email
+                .Trim()
+                .ToLower();
+
         var istniejeUzytkownik =
             await _userManager
                 .FindByEmailAsync(
@@ -81,7 +76,7 @@ public class KontoController : Controller
         var istniejePacjent =
             await _context.Pacjenci
                 .AnyAsync(x =>
-                    x.Email ==
+                    x.Email.ToLower() ==
                     model.Email);
 
         if (istniejePacjent)
@@ -227,6 +222,11 @@ public class KontoController : Controller
         {
             return View(model);
         }
+
+        model.Email =
+            model.Email
+                .Trim()
+                .ToLower();
 
         var wynik =
             await _signInManager

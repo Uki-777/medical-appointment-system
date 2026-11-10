@@ -85,11 +85,17 @@ namespace MediBook.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
                     b.HasIndex("PlacowkaMedycznaId");
 
                     b.HasIndex("SpecjalizacjaId");
 
-                    b.HasIndex("UzytkownikId");
+                    b.HasIndex("UzytkownikId")
+                        .IsUnique()
+                        .HasFilter("[UzytkownikId] IS NOT NULL");
 
                     b.ToTable("Lekarze");
                 });
@@ -129,7 +135,12 @@ namespace MediBook.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UzytkownikId");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("UzytkownikId")
+                        .IsUnique()
+                        .HasFilter("[UzytkownikId] IS NOT NULL");
 
                     b.ToTable("Pacjenci");
                 });

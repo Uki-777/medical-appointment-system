@@ -1,62 +1,108 @@
 @model IEnumerable<MediBook.Models.Pacjent>
 
+@{
+    ViewData["Title"] = "Pacjenci";
+}
+
 <h1>Pacjenci</h1>
 
-<a asp-action="Create"
-   class="btn btn-primary mb-3">
-    Dodaj pacjenta
-</a>
+<p class="text-muted mb-4">
+    Konta pacjentów są tworzone podczas rejestracji użytkowników.
+</p>
 
-<table class="table">
+<div class="table-responsive">
 
-    <thead>
-        <tr>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>Email</th>
-            <th>Telefon</th>
-            <th>Data urodzenia</th>
-            <th></th>
-        </tr>
-    </thead>
+    <table class="table align-middle">
 
-    <tbody>
+        <thead>
 
-        @foreach (var item in Model)
-        {
             <tr>
 
-                <td>@item.Imie</td>
+                <th>
+                    Imię
+                </th>
 
-                <td>@item.Nazwisko</td>
+                <th>
+                    Nazwisko
+                </th>
 
-                <td>@item.Email</td>
+                <th>
+                    Email
+                </th>
 
-                <td>@item.NumerTelefonu</td>
+                <th>
+                    Telefon
+                </th>
 
-                <td>
-                    @item.DataUrodzenia?.ToString("dd.MM.yyyy")
-                </td>
+                <th>
+                    Data urodzenia
+                </th>
 
-                <td>
-
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Id"
-                       class="btn btn-warning btn-sm">
-                        Edytuj
-                    </a>
-
-                    <a asp-action="Delete"
-                       asp-route-id="@item.Id"
-                       class="btn btn-danger btn-sm">
-                        Usuń
-                    </a>
-
-                </td>
+                <th>
+                    Akcje
+                </th>
 
             </tr>
-        }
 
-    </tbody>
+        </thead>
 
-</table>
+        <tbody>
+
+            @foreach (var pacjent in Model)
+            {
+                <tr>
+
+                    <td>
+                        @pacjent.Imie
+                    </td>
+
+                    <td>
+                        @pacjent.Nazwisko
+                    </td>
+
+                    <td>
+                        @pacjent.Email
+                    </td>
+
+                    <td>
+                        @(string.IsNullOrWhiteSpace(
+                            pacjent.NumerTelefonu)
+                            ? "-"
+                            : pacjent.NumerTelefonu)
+                    </td>
+
+                    <td>
+                        @(pacjent.DataUrodzenia.HasValue
+                            ? pacjent.DataUrodzenia.Value
+                                .ToString("dd.MM.yyyy")
+                            : "-")
+                    </td>
+
+                    <td>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@pacjent.Id"
+                           class="btn btn-warning btn-sm">
+
+                            Edytuj
+
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@pacjent.Id"
+                           class="btn btn-danger btn-sm">
+
+                            Usuń
+
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

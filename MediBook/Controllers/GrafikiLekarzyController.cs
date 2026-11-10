@@ -95,6 +95,8 @@ public class GrafikiLekarzyController : Controller
             return View(grafik);
         }
 
+        grafik.CzyDostepny = true;
+        
         _context.GrafikiLekarzy.Add(grafik);
 
         await _context.SaveChangesAsync();

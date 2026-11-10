@@ -1,6 +1,7 @@
 using MediBook.Data;
 using MediBook.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +11,14 @@ namespace MediBook.Controllers;
 public class PacjenciController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<Uzytkownik> _userManager;
 
     public PacjenciController(
-        ApplicationDbContext context)
+        ApplicationDbContext context,
+        UserManager<Uzytkownik> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     public async Task<IActionResult> Index()
@@ -26,51 +30,6 @@ public class PacjenciController : Controller
                 .ToListAsync();
 
         return View(pacjenci);
-    }
-
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(
-        Pacjent pacjent)
-    {
-        var istniejeEmail =
-            await _context.Pacjenci.AnyAsync(x =>
-                x.Email == pacjent.Email);
-
-        if (istniejeEmail)
-        {
-            ModelState.AddModelError(
-                "Email",
-                "Pacjent z takim adresem email już istnieje.");
-        }
-
-        if (pacjent.DataUrodzenia.HasValue &&
-            pacjent.DataUrodzenia.Value.Date >
-            DateTime.Today)
-        {
-            ModelState.AddModelError(
-                "DataUrodzenia",
-                "Data urodzenia nie może być datą przyszłą.");
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return View(pacjent);
-        }
-
-        _context.Pacjenci.Add(pacjent);
-
-        await _context.SaveChangesAsync();
-
-        TempData["Sukces"] =
-            "Pacjent został dodany.";
-
-        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(
@@ -106,25 +65,48 @@ public class PacjenciController : Controller
             return NotFound();
         }
 
-        var pacjentIstnieje =
-            await _context.Pacjenci.AnyAsync(x =>
-                x.Id == id);
+        var aktualnyPacjent =
+            await _context.Pacjenci
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.Id == id);
 
-        if (!pacjentIstnieje)
+        if (aktualnyPacjent == null)
         {
             return NotFound();
         }
 
-        var istniejeEmail =
-            await _context.Pacjenci.AnyAsync(x =>
-                x.Email == pacjent.Email &&
-                x.Id != id);
+        pacjent.Email =
+            pacjent.Email
+                .Trim()
+                .ToLower();
 
-        if (istniejeEmail)
+        var istniejeEmailPacjenta =
+            await _context.Pacjenci
+                .AnyAsync(x =>
+                    x.Id != id &&
+                    x.Email.ToLower() ==
+                    pacjent.Email);
+
+        if (istniejeEmailPacjenta)
         {
             ModelState.AddModelError(
                 "Email",
                 "Pacjent z takim adresem email już istnieje.");
+        }
+
+        var istniejeKonto =
+            await _userManager
+                .FindByEmailAsync(
+                    pacjent.Email);
+
+        if (istniejeKonto != null &&
+            istniejeKonto.Id !=
+            aktualnyPacjent.UzytkownikId)
+        {
+            ModelState.AddModelError(
+                "Email",
+                "Konto z takim adresem email już istnieje.");
         }
 
         if (pacjent.DataUrodzenia.HasValue &&
@@ -141,8 +123,50 @@ public class PacjenciController : Controller
             return View(pacjent);
         }
 
+        if (!string.IsNullOrWhiteSpace(
+            aktualnyPacjent.UzytkownikId))
+        {
+            var uzytkownik =
+                await _userManager.FindByIdAsync(
+                    aktualnyPacjent.UzytkownikId);
+
+            if (uzytkownik != null)
+            {
+                uzytkownik.Imie =
+                    pacjent.Imie;
+
+                uzytkownik.Nazwisko =
+                    pacjent.Nazwisko;
+
+                uzytkownik.Email =
+                    pacjent.Email;
+
+                uzytkownik.UserName =
+                    pacjent.Email;
+
+                var wynik =
+                    await _userManager
+                        .UpdateAsync(
+                            uzytkownik);
+
+                if (!wynik.Succeeded)
+                {
+                    foreach (var blad
+                             in wynik.Errors)
+                    {
+                        ModelState.AddModelError(
+                            "",
+                            blad.Description);
+                    }
+
+                    return View(pacjent);
+                }
+            }
+        }
+
         await _context.Pacjenci
-            .Where(x => x.Id == id)
+            .Where(x =>
+                x.Id == id)
             .ExecuteUpdateAsync(settery =>
                 settery
                     .SetProperty(
@@ -164,7 +188,8 @@ public class PacjenciController : Controller
         TempData["Sukces"] =
             "Dane pacjenta zostały zaktualizowane.";
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(
+            nameof(Index));
     }
 
     public async Task<IActionResult> Delete(
@@ -205,24 +230,46 @@ public class PacjenciController : Controller
         }
 
         var posiadaWizyty =
-            await _context.Wizyty.AnyAsync(x =>
-                x.PacjentId == id);
+            await _context.Wizyty
+                .AnyAsync(x =>
+                    x.PacjentId == id);
 
         if (posiadaWizyty)
         {
             TempData["Blad"] =
                 "Nie można usunąć pacjenta, który posiada historię wizyt.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(
+                nameof(Index));
         }
 
-        _context.Pacjenci.Remove(pacjent);
+        Uzytkownik? uzytkownik = null;
+
+        if (!string.IsNullOrWhiteSpace(
+            pacjent.UzytkownikId))
+        {
+            uzytkownik =
+                await _userManager
+                    .FindByIdAsync(
+                        pacjent.UzytkownikId);
+        }
+
+        _context.Pacjenci.Remove(
+            pacjent);
 
         await _context.SaveChangesAsync();
+
+        if (uzytkownik != null)
+        {
+            await _userManager
+                .DeleteAsync(
+                    uzytkownik);
+        }
 
         TempData["Sukces"] =
             "Pacjent został usunięty.";
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(
+            nameof(Index));
     }
 }
